@@ -1,7 +1,6 @@
 
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import ProductPage from './ProductPage';
 import ProductListingPage from './ProductListingPage';
 
 
@@ -12,6 +11,7 @@ function App() {
       <Routes>
 
         {/* <Route path="/addproduct" Component={ProductPage} /> */}
+        
         <Route path="/productlisting" Component={ProductListingPage} />
         <Route path="/" Component={ProductListingPage} />
 

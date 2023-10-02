@@ -1,73 +1,114 @@
 import React, { useState, useEffect } from 'react';
+import ProductList from './ProductList';
+import AddProductModal from './AddProductModal';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { Button } from '@mui/material';
 
 function ProductListingPage() {
     const [products, setProducts] = useState([]);
-    const [newProduct, setNewProduct] = useState({ name: '', quantity: '' });
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    useEffect(() => {
-        // Retrieve data from localStorage when the component mounts
-        const storedProducts = JSON.parse(localStorage.getItem('products')) || [];
-        setProducts(storedProducts);
-        console.log(storedProducts)
-    }, []);
+    // Function to open the modal
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    // Function to close the modal
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
 
     // Function to handle adding a new product
-    function addProduct() {
+    function handleAddProduct(newProduct) {
         if (newProduct.name && newProduct.quantity) {
-            const updatedProducts = [...products, newProduct];
-            setProducts(updatedProducts);
-
-            // Update localStorage
-            localStorage.setItem('products', JSON.stringify(updatedProducts));
-
-            // Clear the input fields
-            setNewProduct({ name: '', quantity: '' });
+            // Send the new product data to the backend
+            fetch('http://localhost:5000/api/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newProduct),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // Update the local state with the response data (if needed)
+                    setProducts([...products, data]);
+                    console.log(data);
+                })
+                .catch((error) => {
+                    console.error('Error adding product:', error);
+                });
+            closeModal();
         }
     }
 
-    return (
-        <div>
-            <h1>Product Listing Page</h1>
-            <ul>
-                {products.map((product, index) => (
-                    <li key={index}>
-                        {product.name} - Quantity: {product.quantity}
-                    </li>
-                ))}
-            </ul>
+    // Function to handle removing a product by ID
+    function handleRemoveProduct(productId) {
+        // Make a DELETE request to the API endpoint
+        fetch(`http://localhost:5000/api/products/${productId}`, {
+            method: 'DELETE',
+        })
+            .then((response) => {
+                if (response.ok) {
+                    // If the request was successful, update the local state
+                    // Remove the product from the local state
+                    const updatedProducts = products.filter((product) => product.id !== productId);
+                    setProducts(updatedProducts);
+                    console.log('Product Deleted Successfully')
+                } else {
+                    console.error('Failed to delete product');
+                }
+            })
+            .catch((error) => {
+                console.error('Error deleting product:', error);
+            });
+    }
 
-            {/* Form for adding a new product */}
-            <div>
-                <h2>Add a New Product</h2>
-                <form>
-                    <div>
-                        <label>Name:</label>
-                        <input
-                            type="text"
-                            value={newProduct.name}
-                            onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-                            placeholder='Product Name'
-                        />
-                    </div>
-                    <div>
-                        <label>Quantity:</label>
-                        <input
-                            type="number"
-                            value={newProduct.quantity}
-                            onChange={(e) => {
-                                // 
-                                const newValue = Math.max(1, parseInt(e.target.value, 10));
-                                setNewProduct({ ...newProduct, quantity: newValue });
-                            }}
-                            placeholder='1'
-                            min="1"
-                        />
-                    </div>
-                    <button type="button" onClick={addProduct}>
-                        Add Product
-                    </button>
-                </form>
-            </div>
+
+    // Function to handle changing the quantity of a product
+    function handleQuantityChange(productId, newQuantity) {
+        // Prepare the data for the PUT request
+        const updatedProductData = {
+            quantity: newQuantity,
+        };
+
+        // Make a PUT request to update the quantity
+        fetch(`http://localhost:5000/api/products/${productId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedProductData),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                // Update the local state with the updated product data
+                setProducts((prevProducts) => {
+                    return prevProducts.map((product) => {
+                        if (product.id === productId) {
+                            return { ...product, quantity: data.quantity };
+                        }
+                        
+                        return product;
+                    });
+                });
+            })
+            .catch((error) => {
+                console.error('Error updating product quantity:', error);
+            });
+    }
+
+    return (
+        <div align='center'>
+            <ProductList
+                products={products}
+                onUpdateQuantity={handleQuantityChange}
+                onRemoveProduct={handleRemoveProduct}
+            />
+            <Button variant='contained' size='large' endIcon={<AddCircleOutlineIcon />} onClick={openModal}>
+                Add Product
+            </Button>
+            <AddProductModal isOpen={isModalOpen} onClose={closeModal} onAddProduct={handleAddProduct} />
         </div>
     );
 }
