@@ -17,6 +17,16 @@ function ProductListingPage() {
     const closeModal = () => {
         setIsModalOpen(false);
     };
+    const styles = {
+        customButton: {
+            backgroundColor: '#ffc83d',
+            color: 'black',
+            '&:hover': {
+                backgroundColor: '#ffc83d', // Keep the same background color on hover
+                color: 'black', // Keep the same text color on hover
+            },
+        },
+    };
 
     // Function to handle adding a new product
     function handleAddProduct(newProduct) {
@@ -88,7 +98,7 @@ function ProductListingPage() {
                         if (product.id === productId) {
                             return { ...product, quantity: data.quantity };
                         }
-                        
+
                         return product;
                     });
                 });
@@ -105,7 +115,7 @@ function ProductListingPage() {
                 onUpdateQuantity={handleQuantityChange}
                 onRemoveProduct={handleRemoveProduct}
             />
-            <Button variant='contained' size='large' endIcon={<AddCircleOutlineIcon />} onClick={openModal}>
+            <Button variant='contained' sx={styles.customButton} size='large' endIcon={<AddCircleOutlineIcon />} onClick={openModal}>
                 Add Product
             </Button>
             <AddProductModal isOpen={isModalOpen} onClose={closeModal} onAddProduct={handleAddProduct} />

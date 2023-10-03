@@ -13,7 +13,16 @@ function AddProductModal({ isOpen, onClose, onAddProduct }) {
             onClose();
         }
     };
-
+    const styles = {
+        customButton: {
+            backgroundColor: '#ffc83d',
+            color: 'black',
+            '&:hover': {
+                backgroundColor: '#ffc83d', // Keep the same background color on hover
+                color: 'black', // Keep the same text color on hover
+            },
+        },
+    };
     return (
         <Modal align='center' open={isOpen} onClose={onClose}>
             <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'white', padding: '20px', borderRadius: '5px' }}>
@@ -29,12 +38,12 @@ function AddProductModal({ isOpen, onClose, onAddProduct }) {
                     label='Quantity'
                     type='number'
                     value={newProduct.quantity}
-                    onChange={(e) => setNewProduct({ ...newProduct, quantity: Math.max(1, Math.floor(e.target.value))})}
+                    onChange={(e) => setNewProduct({ ...newProduct, quantity: Math.max(1, Math.floor(e.target.value)) })}
                     fullWidth
                     step='1'
                     margin='normal'
                 />
-                <Button variant='contained' color='primary' onClick={handleAddProduct} endIcon={<AddCircleOutlineIcon />}>Add Product</Button>
+                <Button sx={styles.customButton} variant='contained' color='primary' onClick={handleAddProduct} endIcon={<AddCircleOutlineIcon />}>Add Product</Button>
             </div>
         </Modal>
     );

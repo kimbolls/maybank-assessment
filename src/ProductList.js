@@ -32,6 +32,20 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
+const styles = {
+    customButton: {
+        backgroundColor: '#ffc83d',
+        color: 'black',
+        border: 'none',
+        '&:hover': {
+            backgroundColor: '#ffc83d', // Keep the same background color on hover
+            color: 'black', // Keep the same text color on hover
+            border: 'none',
+        },
+    },
+};
+
+
 function ProductList({ products, onUpdateQuantity, onRemoveProduct }) {
     const [localProducts, setLocalProducts] = useState(products); // Define the local state
 
@@ -66,6 +80,7 @@ function ProductList({ products, onUpdateQuantity, onRemoveProduct }) {
                                 </StyledTableCell>
                                 <StyledTableCell align="center">
                                     <IconButton
+
                                         aria-label='RemoveCircleOutlineIcon'
                                         onClick={() => onUpdateQuantity(product.id, product.quantity - 1)}
                                         disabled={product.quantity === 0}
@@ -81,16 +96,18 @@ function ProductList({ products, onUpdateQuantity, onRemoveProduct }) {
                                     </IconButton>
                                 </StyledTableCell>
                                 <StyledTableCell align="center">
-                                {product.quantity===0 &&
-                                
-                                    <Button
-                                        variant="outlined"
-                                        onClick={() => onRemoveProduct(product.id)}
-                                    >
-                                        Remove
-                                    </Button>
-                                
-                                }
+                                    {product.quantity === 0 &&
+
+                                        <Button
+                                            component={Paper}
+                                            sx={styles.customButton}
+                                            variant="outlined"
+                                            onClick={() => onRemoveProduct(product.id)}
+                                        >
+                                            Remove
+                                        </Button>
+
+                                    }
                                 </StyledTableCell>
                             </StyledTableRow>
                         ))}
