@@ -33,6 +33,7 @@ function AddProductModal({ isOpen, onClose, onAddProduct }) {
                     onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
                     fullWidth
                     margin='normal'
+                    variant='filled'
                 />
                 <TextField
                     label='Quantity'
@@ -41,7 +42,8 @@ function AddProductModal({ isOpen, onClose, onAddProduct }) {
                     onChange={(e) => setNewProduct({ ...newProduct, quantity: Math.max(1, Math.floor(e.target.value)) })}
                     fullWidth
                     step='1'
-                    margin='normal'
+                    margin='normal' 
+                    variant='filled'
                 />
                 <Button sx={styles.customButton} variant='contained' color='primary' onClick={handleAddProduct} endIcon={<AddCircleOutlineIcon />}>Add Product</Button>
             </div>

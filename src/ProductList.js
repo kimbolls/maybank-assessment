@@ -11,6 +11,11 @@ import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -46,8 +51,24 @@ const styles = {
 };
 
 
+
+
 function ProductList({ products, onUpdateQuantity, onRemoveProduct }) {
     const [localProducts, setLocalProducts] = useState(products); // Define the local state
+    const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [productIdToDelete, setProductIdToDelete] = useState(null);
+
+    const openDeleteDialog = (productId) => {
+        setProductIdToDelete(productId);
+        setDeleteDialogOpen(true);
+    };
+
+    const closeDeleteDialog = () => {
+        setProductIdToDelete(null);
+        setDeleteDialogOpen(false);
+    };
+
+
 
     useEffect(() => {
         // Fetch products from the backend when the component mounts
@@ -105,7 +126,7 @@ function ProductList({ products, onUpdateQuantity, onRemoveProduct }) {
                                                 component={Paper}
                                                 sx={styles.customButton}
                                                 variant="outlined"
-                                                onClick={() => onRemoveProduct(product.id)}
+                                                onClick={() => openDeleteDialog(product.id)}
                                             >
                                                 Remove
                                             </Button>
@@ -119,6 +140,33 @@ function ProductList({ products, onUpdateQuantity, onRemoveProduct }) {
                     </Table><br /><br />
                 </TableContainer>
             )}
+            <Dialog
+                open={isDeleteDialogOpen}
+                onClose={closeDeleteDialog}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">Confirm Delete</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to delete this product?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={closeDeleteDialog} sx={styles.customButton} color="primary">
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            onRemoveProduct(productIdToDelete); // Call the remove product function
+                            closeDeleteDialog(); // Close the dialog
+                        }}
+                        color="primary"
+                    >
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 }
