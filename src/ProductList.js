@@ -60,60 +60,65 @@ function ProductList({ products, onUpdateQuantity, onRemoveProduct }) {
     return (
         <div align="center">
             <Typography variant='h3' gutterBottom style={{ marginTop: '20px' }}>Product List</Typography>
-            {/* Table */}
-            <TableContainer >
-                <Table component={Paper} align="center" sx={{ minWidth: 650, maxWidth: '70%' }} aria-label="customized table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell> Product Name</TableCell>
-                            <TableCell align="center"> Quantity </TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {localProducts.map((product) => (
-                            <StyledTableRow
-                                key={product.id}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <StyledTableCell component="th" scope="row">
-                                    {product.name}
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                    <IconButton
 
-                                        aria-label='RemoveCircleOutlineIcon'
-                                        onClick={() => onUpdateQuantity(product.id, product.quantity - 1)}
-                                        disabled={product.quantity === 0}
-                                    >
-                                        <RemoveCircleOutlineIcon />
-                                    </IconButton>
-                                    {product.quantity}
-                                    <IconButton
-                                        aria-label='AddCircleOutlineIcon'
-                                        onClick={() => onUpdateQuantity(product.id, product.quantity + 1)}
-                                    >
-                                        <AddCircleOutline />
-                                    </IconButton>
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                    {product.quantity === 0 &&
+            {localProducts.length === 0 ? ( // Check if the localProducts array is empty
+                <><Typography variant='body1' style={{ marginTop: '20px' }}>No products yet</Typography> <br /><br /></>
+            ) : (
+                <TableContainer >
+                    <Table component={Paper} align="center" sx={{ minWidth: 650, maxWidth: '70%' }} aria-label="customized table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell> Product Name</TableCell>
+                                <TableCell align="center"> Quantity </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {localProducts.map((product) => (
+                                <StyledTableRow
+                                    key={product.id}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <StyledTableCell component="th" scope="row">
+                                        {product.name}
+                                    </StyledTableCell>
+                                    <StyledTableCell align="center">
+                                        <IconButton
 
-                                        <Button
-                                            component={Paper}
-                                            sx={styles.customButton}
-                                            variant="outlined"
-                                            onClick={() => onRemoveProduct(product.id)}
+                                            aria-label='RemoveCircleOutlineIcon'
+                                            onClick={() => onUpdateQuantity(product.id, product.quantity - 1)}
+                                            disabled={product.quantity === 0}
                                         >
-                                            Remove
-                                        </Button>
+                                            <RemoveCircleOutlineIcon />
+                                        </IconButton>
+                                        {product.quantity}
+                                        <IconButton
+                                            aria-label='AddCircleOutlineIcon'
+                                            onClick={() => onUpdateQuantity(product.id, product.quantity + 1)}
+                                        >
+                                            <AddCircleOutline />
+                                        </IconButton>
+                                    </StyledTableCell>
+                                    <StyledTableCell align="center">
+                                        {product.quantity === 0 &&
 
-                                    }
-                                </StyledTableCell>
-                            </StyledTableRow>
-                        ))}
-                    </TableBody>
-                </Table><br /><br />
-            </TableContainer>
+                                            <Button
+                                                component={Paper}
+                                                sx={styles.customButton}
+                                                variant="outlined"
+                                                onClick={() => onRemoveProduct(product.id)}
+                                            >
+                                                Remove
+                                            </Button>
+
+                                        }
+                                    </StyledTableCell>
+                                </StyledTableRow>
+                            ))}
+
+                        </TableBody>
+                    </Table><br /><br />
+                </TableContainer>
+            )}
         </div>
     );
 }
